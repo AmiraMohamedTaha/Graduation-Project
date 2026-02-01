@@ -315,14 +315,102 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text(
-          "Selected Tab: $selectedindex",
-          style: const TextStyle(fontSize: 20),
-        ),
+    // القوائم المختلفة لكل تاب
+    final pages = [
+      /* ========= الصفحة اللي فيها الخريطة و الاتوبيسات ========= */
+      Stack(
+        children: [
+          /* ================= MAP FAKE UI مع صورة حقيقية ================= */
+Container(
+  height: MediaQuery.of(context).size.height * 0.45,
+  width: double.infinity,
+  child: Stack(
+    children: [
+      Image.asset(
+        "images/Map-of-Alexandria.jpeg",
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
       ),
 
+      const Positioned(
+        top: 120,
+        left: 550,
+        child: Icon(Icons.directions_bus, color: Color.fromARGB(255, 6, 80, 141), size: 40),
+      ),
+      const Positioned(
+        top: 70,
+        right: 70,
+        child: Icon(Icons.directions_bus, color: Color.fromARGB(255, 14, 84, 15), size: 40),
+      ),
+    ],
+  ),
+),
+
+
+
+          /* ================= BUS LIST ================= */
+          DraggableScrollableSheet(
+            initialChildSize: 0.45,
+            minChildSize: 0.45,
+            maxChildSize: 0.8,
+            builder: (context, controller) {
+              return Container(
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(30)),
+                ),
+                child: ListView(
+                  controller: controller,
+                  children: const [
+                    BusCard(
+                      color: Colors.blue,
+                      name: "Mone Maseer",
+                      time: "10 mins",
+                      stops: [
+                        "Sidi Gaber",
+                        "Sporting",
+                        "Mahran",
+                        "Camp Shezar",
+                        "Alshatby"
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    BusCard(
+                      color: Colors.green,
+                      name: "Metro Maseer",
+                      time: "10 mins",
+                      stops: [
+                        "Sidi Gaber",
+                        "Raml",
+                        "Stanley",
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+
+      /* ========= صفحة Travels بسيطة ========= */
+      const Center(child: Text("Travels Page")),
+
+      /* ========= صفحة Subscriptions بسيطة ========= */
+      const Center(child: Text("Subscriptions Page")),
+
+      /* ========= صفحة More بسيطة ========= */
+      const Center(child: Text("More Page")),
+    ];
+
+    return Scaffold(
+      backgroundColor: const Color(0xffE6E1FF),
+      body: pages[selectedindex],
+
+      /* ================= BOTTOM NAVIGATION BAR ================= */
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedindex,
         onTap: (val) {
@@ -359,18 +447,74 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.deepPurple,
-        shape: BeveledRectangleBorder(
-          borderRadius: BorderRadius.circular(26),
-        ),
-        onPressed: () {},
-        child: const Icon(Icons.add, color: Colors.white, size: 40),
-      ),
-
+      /* ================= FLOATING ACTION BUTTON ================= */
+      floatingActionButton: selectedindex == 0
+          ? FloatingActionButton(
+              backgroundColor: Colors.deepPurple,
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.circular(26),
+              ),
+              onPressed: () {},
+              child: const Icon(Icons.add, color: Colors.white, size: 40),
+            )
+          : null,
       floatingActionButtonLocation:
           FloatingActionButtonLocation.miniCenterDocked,
     );
   }
 }
 
+/* ===================== BUS CARD ===================== */
+class BusCard extends StatelessWidget {
+  final Color color;
+  final String name;
+  final String time;
+  final List<String> stops;
+
+  const BusCard({
+    super.key,
+    required this.color,
+    required this.name,
+    required this.time,
+    required this.stops,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        border: Border.all(color: color, width: 2),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.directions_bus, color: color),
+              const SizedBox(width: 8),
+              Text(name,
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              const Spacer(),
+              Text(time),
+            ],
+          ),
+          const SizedBox(height: 10),
+          const Text("Stops",
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 6),
+          ...stops.map(
+            (s) => Row(
+              children: [
+                const Icon(Icons.circle, size: 6),
+                const SizedBox(width: 6),
+                Text(s),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
