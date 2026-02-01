@@ -5,7 +5,6 @@ void main() {
 }
 
 /* ===================== APP ROOT ===================== */
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -19,7 +18,6 @@ class MyApp extends StatelessWidget {
 }
 
 /* ===================== LOGIN PAGE ===================== */
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -29,7 +27,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -38,7 +35,6 @@ class _LoginPageState extends State<LoginPage> {
     final hasSpecialChar =
         password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
     final hasMinLength = password.length >= 8;
-
     return hasUppercase && hasSpecialChar && hasMinLength;
   }
 
@@ -55,15 +51,12 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 40),
-
                   const Icon(
                     Icons.location_on,
                     size: 60,
                     color: Colors.deepPurple,
                   ),
-
                   const SizedBox(height: 20),
-
                   const Text(
                     "Welcome back\nto Maseer",
                     textAlign: TextAlign.center,
@@ -72,11 +65,9 @@ class _LoginPageState extends State<LoginPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 40),
 
                   /* ================= PHONE ================= */
-
                   TextFormField(
                     controller: phoneController,
                     keyboardType: TextInputType.phone,
@@ -87,27 +78,20 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
                         return "Phone number is required";
-                    }
-
-                     // remove spaces just in case
-                     value = value.trim();
-
-                    // accepts 010xxxxxxxx or 10xxxxxxxx
-                    if (!RegExp(r'^0?\d{10}$').hasMatch(value)) {
+                      }
+                      value = value.trim();
+                      if (!RegExp(r'^0?\d{10}$').hasMatch(value)) {
                         return "Invalid phone number";
-                    }
-
-                     return null;
+                      }
+                      return null;
                     },
                   ),
-
                   const SizedBox(height: 20),
 
                   /* ================= PASSWORD ================= */
-
                   TextFormField(
                     controller: passwordController,
                     obscureText: true,
@@ -118,17 +102,15 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Password is required";
-                        }
-                        return null;
-                      },
+                      if (value == null || value.isEmpty) {
+                        return "Password is required";
+                      }
+                      return null;
+                    },
                   ),
-
                   const SizedBox(height: 30),
 
                   /* ================= SIGN IN ================= */
-
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -158,27 +140,27 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 20),
 
                   Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("New user? "),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const RegisterPage()),
-                        );
-                      },
-                      child: const Text(
-                        "Create an account",
-                        style: TextStyle(
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.bold,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("New user? "),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const RegisterPage()),
+                          );
+                        },
+                        child: const Text(
+                          "Create an account",
+                          style: TextStyle(
+                            color: Colors.deepPurple,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -189,6 +171,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
+/* ===================== REGISTER PAGE ===================== */
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -198,19 +181,17 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-
   final usernameController = TextEditingController();
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
 
-    bool isPasswordValid(String password) {
-      final hasUppercase = password.contains(RegExp(r'[A-Z]'));
-      final hasSpecialChar =
-          password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
-      final hasMinLength = password.length >= 8;
-
-      return hasUppercase && hasSpecialChar && hasMinLength;
-    }
+  bool isPasswordValid(String password) {
+    final hasUppercase = password.contains(RegExp(r'[A-Z]'));
+    final hasSpecialChar =
+        password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+    final hasMinLength = password.length >= 8;
+    return hasUppercase && hasSpecialChar && hasMinLength;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -223,20 +204,18 @@ class _RegisterPageState extends State<RegisterPage> {
             key: _formKey,
             child: Column(
               children: [
-
                 const SizedBox(height: 30),
-                const Text("Create Account",
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
-
+                const Text(
+                  "Create Account",
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 30),
 
                 TextFormField(
                   controller: usernameController,
                   decoration: const InputDecoration(labelText: "Username"),
-                  validator: (v) =>
-                      v!.isEmpty ? "Username required" : null,
+                  validator: (v) => v!.isEmpty ? "Username required" : null,
                 ),
-
                 const SizedBox(height: 15),
 
                 TextFormField(
@@ -253,7 +232,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 15),
 
                 TextFormField(
@@ -261,19 +239,15 @@ class _RegisterPageState extends State<RegisterPage> {
                   obscureText: true,
                   decoration: const InputDecoration(labelText: "Password"),
                   validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Password required";
-                      }
-
-                      if (!isPasswordValid(value)) {
-                        return "Password must be:\n• At least 8 characters\n• contain special letters\n• contain capital letters";
-                      }
-
-                      return null;
-                    },
-
+                    if (value == null || value.isEmpty) {
+                      return "Password required";
+                    }
+                    if (!isPasswordValid(value)) {
+                      return "Password must be:\n• At least 8 characters\n• contain special letters\n• contain capital letters";
+                    }
+                    return null;
+                  },
                 ),
-
                 const SizedBox(height: 30),
 
                 ElevatedButton(
@@ -287,7 +261,18 @@ class _RegisterPageState extends State<RegisterPage> {
                       );
                     }
                   },
-                  child: const Text("Register"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: const Text(
+                    "Register",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
                 ),
               ],
             ),
@@ -298,11 +283,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 }
 
-
-
-
-/* ===================== HOME PAGE (OLD CODE) ===================== */
-
+/* ===================== HOME PAGE ===================== */
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -315,41 +296,36 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // القوائم المختلفة لكل تاب
     final pages = [
-      /* ========= الصفحة اللي فيها الخريطة و الاتوبيسات ========= */
+      /* ========= Home page: Map + Buses ========= */
       Stack(
         children: [
-          /* ================= MAP FAKE UI مع صورة حقيقية ================= */
-Container(
-  height: MediaQuery.of(context).size.height * 0.45,
-  width: double.infinity,
-  child: Stack(
-    children: [
-      Image.asset(
-        "images/Map-of-Alexandria.jpeg",
-        fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
-      ),
-
-      const Positioned(
-        top: 120,
-        left: 550,
-        child: Icon(Icons.directions_bus, color: Color.fromARGB(255, 6, 80, 141), size: 40),
-      ),
-      const Positioned(
-        top: 70,
-        right: 70,
-        child: Icon(Icons.directions_bus, color: Color.fromARGB(255, 14, 84, 15), size: 40),
-      ),
-    ],
-  ),
-),
-
-
-
-          /* ================= BUS LIST ================= */
+          Container(
+            height: MediaQuery.of(context).size.height * 0.45,
+            width: double.infinity,
+            child: Stack(
+              children: [
+                Image.asset(
+                  "images/Map-of-Alexandria.jpeg",
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+                const Positioned(
+                  top: 50,
+                  left: 600,
+                  child: Icon(Icons.directions_bus,
+                      color: Color.fromARGB(255, 6, 80, 141), size: 40),
+                ),
+                const Positioned(
+                  top: 70,
+                  right: 50,
+                  child: Icon(Icons.directions_bus,
+                      color: Color.fromARGB(255, 14, 84, 15), size: 40),
+                ),
+              ],
+            ),
+          ),
           DraggableScrollableSheet(
             initialChildSize: 0.45,
             minChildSize: 0.45,
@@ -395,22 +371,14 @@ Container(
           ),
         ],
       ),
-
-      /* ========= صفحة Travels بسيطة ========= */
       const Center(child: Text("Travels Page")),
-
-      /* ========= صفحة Subscriptions بسيطة ========= */
       const Center(child: Text("Subscriptions Page")),
-
-      /* ========= صفحة More بسيطة ========= */
-      const Center(child: Text("More Page")),
+      const MorePage(), // More page
     ];
 
     return Scaffold(
       backgroundColor: const Color(0xffE6E1FF),
       body: pages[selectedindex],
-
-      /* ================= BOTTOM NAVIGATION BAR ================= */
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedindex,
         onTap: (val) {
@@ -446,8 +414,6 @@ Container(
           ),
         ],
       ),
-
-      /* ================= FLOATING ACTION BUTTON ================= */
       floatingActionButton: selectedindex == 0
           ? FloatingActionButton(
               backgroundColor: Colors.deepPurple,
@@ -512,6 +478,114 @@ class BusCard extends StatelessWidget {
                 Text(s),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/* ===================== MORE PAGE ===================== */
+class MorePage extends StatelessWidget {
+  const MorePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Dummy user info
+    final username = "Rewan Gamal";
+    final phone = "+20 1000000000";
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("More"),
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          /* ===== User Info ===== */
+          Card(
+            elevation: 2,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: ListTile(
+              leading: const Icon(Icons.person, color: Colors.deepPurple),
+              title: Text(username),
+              subtitle: Text(phone),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          /* ===== Settings Section ===== */
+          const Text("Settings",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Divider(),
+          SwitchListTile(
+            title: const Text("Dark Mode"),
+            value: false,
+            onChanged: (v) {},
+            secondary: const Icon(Icons.dark_mode),
+          ),
+          SwitchListTile(
+            title: const Text("Notifications"),
+            value: true,
+            onChanged: (v) {},
+            secondary: const Icon(Icons.notifications),
+          ),
+          ListTile(
+            leading: const Icon(Icons.language),
+            title: const Text("Language"),
+            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            onTap: () {},
+          ),
+          const SizedBox(height: 20),
+
+          /* ===== Links Section ===== */
+          const Text("Links",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.help_outline),
+            title: const Text("Help / FAQ"),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.contact_mail_outlined),
+            title: const Text("Contact Us"),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.privacy_tip_outlined),
+            title: const Text("Privacy Policy"),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.description_outlined),
+            title: const Text("Terms & Conditions"),
+            onTap: () {},
+          ),
+          const SizedBox(height: 20),
+
+          /* ===== Log Out Button ===== */
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.deepPurple,
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            child: const Text(
+              "Log Out",
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+                (route) => false,
+              );
+            },
           ),
         ],
       ),
