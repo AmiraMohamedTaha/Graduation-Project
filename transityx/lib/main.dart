@@ -87,14 +87,20 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
+                   validator: (value) {
+                    if (value == null || value.isEmpty) {
                         return "Phone number is required";
-                      }
-                      if (value.length < 10) {
-                        return "Phone number must be 10 digits";
-                      }
-                      return null;
+                    }
+
+                     // remove spaces just in case
+                     value = value.trim();
+
+                    // accepts 010xxxxxxxx or 10xxxxxxxx
+                    if (!RegExp(r'^0?\d{10}$').hasMatch(value)) {
+                        return "Invalid phone number";
+                    }
+
+                     return null;
                     },
                   ),
 
@@ -112,14 +118,11 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Password is required";
-                      }
-                      if (!isPasswordValid(value)) {
-                        return "Password must be:\n• At least 8 characters\n• contain special letters\n• contain capital letters";
-                      }
-                      return null;
-                    },
+                        if (value == null || value.isEmpty) {
+                          return "Password is required";
+                        }
+                        return null;
+                      },
                   ),
 
                   const SizedBox(height: 30),
@@ -152,6 +155,30 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 20),
+
+                  Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("New user? "),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const RegisterPage()),
+                        );
+                      },
+                      child: const Text(
+                        "Create an account",
+                        style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
                 ],
               ),
             ),
@@ -161,6 +188,118 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
+
+  final usernameController = TextEditingController();
+  final phoneController = TextEditingController();
+  final passwordController = TextEditingController();
+
+    bool isPasswordValid(String password) {
+      final hasUppercase = password.contains(RegExp(r'[A-Z]'));
+      final hasSpecialChar =
+          password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+      final hasMinLength = password.length >= 8;
+
+      return hasUppercase && hasSpecialChar && hasMinLength;
+    }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xffF6F6FA),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+
+                const SizedBox(height: 30),
+                const Text("Create Account",
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+
+                const SizedBox(height: 30),
+
+                TextFormField(
+                  controller: usernameController,
+                  decoration: const InputDecoration(labelText: "Username"),
+                  validator: (v) =>
+                      v!.isEmpty ? "Username required" : null,
+                ),
+
+                const SizedBox(height: 15),
+
+                TextFormField(
+                  controller: phoneController,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    labelText: "Phone",
+                    prefixText: "+20 ",
+                  ),
+                  validator: (value) {
+                    if (!RegExp(r'^0?\d{10}$').hasMatch(value!)) {
+                      return "Invalid phone";
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 15),
+
+                TextFormField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: "Password"),
+                  validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Password required";
+                      }
+
+                      if (!isPasswordValid(value)) {
+                        return "Password must be:\n• At least 8 characters\n• contain special letters\n• contain capital letters";
+                      }
+
+                      return null;
+                    },
+
+                ),
+
+                const SizedBox(height: 30),
+
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const HomePage(),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text("Register"),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
 
 /* ===================== HOME PAGE (OLD CODE) ===================== */
 
