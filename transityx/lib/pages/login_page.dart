@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'register_page.dart';
 import 'home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase Auth
 
 /* ===================== LOGIN PAGE ===================== */
 class LoginPage extends StatefulWidget {
@@ -12,15 +13,52 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController(); // بدل phone
   final TextEditingController passwordController = TextEditingController();
 
-  bool isPasswordValid(String password) {
-    final hasUppercase = password.contains(RegExp(r'[A-Z]'));
-    final hasSpecialChar =
-        password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
-    final hasMinLength = password.length >= 8;
-    return hasUppercase && hasSpecialChar && hasMinLength;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void loginUser() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text,
+        );
+
+        // Login success → navigate to Home
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePage()),
+        );
+      } on FirebaseAuthException catch (e) {
+        String message = '';
+        if (e.code == 'user-not-found') {
+          message = "No user found with this email";
+        } else if (e.code == 'wrong-password') {
+          message = "Wrong password";
+        } else if (e.code == 'invalid-email') {
+          message = "Invalid email";
+        } else {
+          message = e.message ?? "Error occurred";
+        }
+
+        // Show error dialog
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text("Login Error"),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              ),
+            ],
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -52,29 +90,30 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 40),
 
+                  // Email field
                   TextFormField(
-                    controller: phoneController,
-                    keyboardType: TextInputType.phone,
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: "Phone number",
-                      prefixText: "+20 ",
+                      labelText: "Email",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Phone number is required";
+                        return "Email is required";
                       }
-                      value = value.trim();
-                      if (!RegExp(r'^0?\d{10}$').hasMatch(value)) {
-                        return "Invalid phone number";
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(value)) {
+                        return "Invalid email";
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 20),
 
+                  // Password field
                   TextFormField(
                     controller: passwordController,
                     obscureText: true,
@@ -94,16 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 30),
 
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ),
-                        );
-                      }
-                    },
+                    onPressed: loginUser,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
                       padding: const EdgeInsets.symmetric(vertical: 16),
