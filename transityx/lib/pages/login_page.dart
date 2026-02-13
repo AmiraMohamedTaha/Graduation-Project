@@ -13,7 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController emailController = TextEditingController(); // بدل phone
+  final TextEditingController emailController = TextEditingController(); 
   final TextEditingController passwordController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -21,42 +21,49 @@ class _LoginPageState extends State<LoginPage> {
   void loginUser() async {
     if (_formKey.currentState!.validate()) {
       try {
-        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        await _auth.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text,
         );
 
         // Login success → navigate to Home
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const HomePage()),
-        );
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const HomePage()),
+          );
+        }
       } on FirebaseAuthException catch (e) {
         String message = '';
-        if (e.code == 'user-not-found') {
-          message = "No user found with this email";
+        
+        // التعديل هنا لتحديد نوع الخطأ كما طلبتِ
+        if (e.code == 'user-not-found' || e.code == 'invalid-email') {
+          message = "email is incorrect";
         } else if (e.code == 'wrong-password') {
-          message = "Wrong password";
-        } else if (e.code == 'invalid-email') {
-          message = "Invalid email";
+          message = "password is incorrect";
+        } else if (e.code == 'invalid-credential') {
+          // في التحديثات الجديدة Firebase يدمج الخطأين معاً أحياناً للأمان
+          message = "email or password is incorrect";
         } else {
           message = e.message ?? "Error occurred";
         }
 
-        // Show error dialog
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text("Login Error"),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("OK"),
-              ),
-            ],
-          ),
-        );
+        // إظهار رسالة الخطأ في Dialog كما كان في كودك الأصلي
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: const Text("Login Error"),
+              content: Text(message),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
+          );
+        }
       }
     }
   }
@@ -136,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: loginUser,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30), // أضفت Horizontal للحفاظ على شكل الزر القديم
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
