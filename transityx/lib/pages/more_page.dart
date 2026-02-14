@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'login_page.dart';
 
-/* ===================== MORE PAGE ===================== */
 class MorePage extends StatelessWidget {
   const MorePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final username = "Rewan Gamal";
-    final phone = "+20 1000000000";
+    final user = FirebaseAuth.instance.currentUser;
+
+    final username = user?.displayName ?? "No Name";
+    final email = user?.email ?? "No Email";
 
     return Scaffold(
       appBar: AppBar(
@@ -18,6 +20,7 @@ class MorePage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          /* ===== User Info ===== */
           Card(
             elevation: 2,
             shape:
@@ -25,11 +28,12 @@ class MorePage extends StatelessWidget {
             child: ListTile(
               leading: const Icon(Icons.person, color: Colors.deepPurple),
               title: Text(username),
-              subtitle: Text(phone),
+              subtitle: Text(email),
             ),
           ),
           const SizedBox(height: 20),
 
+          /* ===== Settings ===== */
           const Text("Settings",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const Divider(),
@@ -53,6 +57,7 @@ class MorePage extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
+          /* ===== Links ===== */
           const Text("Links",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const Divider(),
@@ -78,6 +83,7 @@ class MorePage extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
+          /* ===== Logout ===== */
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepPurple,
@@ -90,7 +96,9 @@ class MorePage extends StatelessWidget {
               "Log Out",
               style: TextStyle(fontSize: 18, color: Colors.white),
             ),
-            onPressed: () {
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const LoginPage()),
