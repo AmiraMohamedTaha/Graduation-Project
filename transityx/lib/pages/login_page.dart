@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
           message = "password is incorrect";
         } else if (e.code == 'invalid-credential') {
           // في التحديثات الجديدة Firebase يدمج الخطأين معاً أحياناً للأمان
-          message = "email or password is incorrect";
+          message = "Email or password is incorrect";
         } else {
           message = e.message ?? "Error occurred";
         }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'travels_page.dart';
 import 'more_page.dart';
 import 'bus_card.dart';
+import 'qr_scanner_page.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 /* ===================== HOME PAGE ===================== */
 class HomePage extends StatefulWidget {
@@ -20,32 +22,28 @@ class _HomePageState extends State<HomePage> {
       /* ========= Home page: Map + Buses ========= */
       Stack(
         children: [
-          Container(
+          SizedBox(
             height: MediaQuery.of(context).size.height * 0.45,
             width: double.infinity,
-            child: Stack(
-              children: [
-                Image.asset(
-                  "images/Map-of-Alexandria.jpeg",
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
+            child: GoogleMap(
+              initialCameraPosition: const CameraPosition(
+                target: LatLng(31.2001, 29.9187),
+                zoom: 12,
+              ),
+              markers: {
+                Marker(
+                  markerId: MarkerId("bus1"),
+                  position: LatLng(31.215, 29.955),
                 ),
-                const Positioned(
-                  top: 50,
-                  left: 600,
-                  child: Icon(Icons.directions_bus,
-                      color: Color.fromARGB(255, 6, 80, 141), size: 40),
+                Marker(
+                  markerId: MarkerId("bus2"),
+                  position: LatLng(31.205, 29.925),
                 ),
-                const Positioned(
-                  top: 70,
-                  right: 50,
-                  child: Icon(Icons.directions_bus,
-                      color: Color.fromARGB(255, 14, 84, 15), size: 40),
-                ),
-              ],
+              },
             ),
           ),
+
+          // 👇 سيب الـ sheet زي ما هي
           DraggableScrollableSheet(
             initialChildSize: 0.45,
             minChildSize: 0.45,
@@ -137,11 +135,18 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: selectedindex == 0
           ? FloatingActionButton(
               backgroundColor: Colors.deepPurple,
-              shape: BeveledRectangleBorder(
-                borderRadius: BorderRadius.circular(26),
-              ),
-              onPressed: () {},
-              child: const Icon(Icons.add, color: Colors.white, size: 40),
+              shape: const CircleBorder(),
+              onPressed: () async {
+                final result = await Navigator.push(
+                       context,
+                      MaterialPageRoute(builder: (context) => const QRScannerPage()),
+                       );
+
+                if (result != null) {
+                      print("Scanned Result: $result");
+                      }
+                },
+              child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 30),
             )
           : null,
       floatingActionButtonLocation:
