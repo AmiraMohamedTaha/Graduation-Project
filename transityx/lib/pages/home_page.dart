@@ -4,6 +4,7 @@ import 'more_page.dart';
 import 'bus_card.dart';
 import 'qr_scanner_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'subscription_page.dart';
 
 /* ===================== HOME PAGE ===================== */
 class HomePage extends StatefulWidget {
@@ -90,7 +91,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       const TravelsPage(),
-      const Center(child: Text("Subscriptions Page")),
+      const SubscriptionPage(),
       const MorePage(),
     ];
 
